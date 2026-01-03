@@ -2,438 +2,525 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Una sorpresa mágica para ti</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nuestra Historia en VHS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=VT323&display=swap');
 
         :root {
-            --dreamy-gradient: linear-gradient(-45deg, #ffafbd, #ffc3a0, #2193b0, #6dd5ed);
+            --vhs-black: #1a1a1a;
+            --neon-blue: #00f3ff;
+            --wood-dark: #2d1e16;
+            --wood-light: #5d4037;
         }
 
         body {
             margin: 0;
-            overflow-x: hidden;
-            background: var(--dreamy-gradient);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            font-family: 'Quicksand', sans-serif;
-            min-height: 100vh;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .dancing {
-            font-family: 'Dancing Script', cursive;
-        }
-
-        /* Corazones animados mejorados */
-        .heart {
-            position: absolute;
-            color: rgba(255, 255, 255, 0.8);
-            animation: float 8s infinite ease-in;
-            opacity: 0;
-            z-index: 1;
-            pointer-events: none;
-            filter: drop-shadow(0 0 5px rgba(255, 192, 203, 0.5));
-        }
-
-        @keyframes float {
-            0% { transform: translateY(110vh) translateX(0) scale(0.5); opacity: 0; }
-            20% { opacity: 0.8; }
-            80% { opacity: 0.8; }
-            100% { transform: translateY(-20vh) translateX(50px) scale(1.2); opacity: 0; }
-        }
-
-        /* Partículas de ensueño */
-        .sparkle {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: twinkle var(--duration) infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.2; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.5); }
-        }
-
-        /* TV DE ENSUEÑO - RESPONSIVE */
-        .tv-wrapper {
-            perspective: 1000px;
-            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));
-            width: 100%;
-            max-width: 650px;
-        }
-
-        .tv-outer-frame {
-            background: linear-gradient(145deg, #2d3748, #1a202c);
-            border-radius: 30px;
-            padding: 15px;
-            border: 6px solid #4a5568;
-            display: flex;
-            flex-direction: column; /* Mobile first: controles abajo */
-            gap: 15px;
-            position: relative;
-            transform: rotateX(2deg);
-        }
-
-        @media (min-width: 768px) {
-            .tv-outer-frame {
-                flex-direction: row; /* Desktop: controles al lado */
-                padding: 25px;
-                border-radius: 50px;
-                border-width: 8px;
-            }
-        }
-
-        .screen-bezel {
-            background: #000;
-            padding: 10px;
-            border-radius: 20px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
-            position: relative;
-        }
-
-        @media (min-width: 768px) {
-            .screen-bezel {
-                padding: 15px;
-                border-radius: 25px;
-            }
-        }
-
-        .screen-container {
-            background: #000;
-            aspect-ratio: 16 / 9;
-            border-radius: 12px;
             overflow: hidden;
-            border: 2px solid #2d3748;
-            position: relative;
-        }
-
-        #player-wrapper {
-            opacity: 0;
-            transition: opacity 1s ease;
-            width: 100%;
-            height: 100%;
-        }
-
-        .tv-on #player-wrapper {
-            opacity: 1;
-        }
-
-        .screen-glass {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .tv-controls {
-            display: flex;
-            flex-direction: row; /* Mobile: horizontal */
-            justify-content: space-around;
-            align-items: center;
-            padding: 5px 10px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 20px;
-        }
-
-        @media (min-width: 768px) {
-            .tv-controls {
-                flex-direction: column; /* Desktop: vertical */
-                gap: 20px;
-                padding: 10px;
-                background: transparent;
-                width: 80px;
-            }
-        }
-
-        .knob {
-            width: 30px;
-            height: 30px;
-            background: radial-gradient(circle at 30% 30%, #4a5568, #1a202c);
-            border-radius: 50%;
-            border: 2px solid #2d3748;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-            position: relative;
-        }
-
-        @media (min-width: 768px) {
-            .knob {
-                width: 40px;
-                height: 40px;
-            }
-        }
-
-        /* BOTÓN DE ENCENDIDO */
-        .power-btn {
-            width: 45px;
-            height: 45px;
-            background: #ef4444;
-            border-radius: 50%;
-            border: 3px solid #991b1b;
-            box-shadow: 0 3px 0 #7f1d1d, 0 5px 10px rgba(0,0,0,0.3);
-            cursor: pointer;
+            background: radial-gradient(circle at center, #4b1d3f 0%, #1a0a1f 100%);
+            font-family: 'Courier Prime', monospace;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            touch-action: none;
+        }
+
+        /* 1. FONDO MÁGICO ANIMADO */
+        .magic-background {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: sparkle var(--d) linear infinite;
+        }
+
+        .floating-heart {
+            position: absolute;
+            color: rgba(255, 175, 189, 0.3);
+            font-size: var(--s);
+            animation: floatUp var(--d) linear infinite;
+            filter: blur(1px);
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: var(--op); transform: scale(1); }
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* 2. SOBRE DIGITAL */
+        .envelope-container {
+            perspective: 1000px;
+            transition: opacity 0.8s ease;
+            width: 90%;
+            max-width: 350px;
+            z-index: 100;
+        }
+
+        .envelope {
+            width: 100%;
+            aspect-ratio: 32 / 22;
+            background: #fff5f5;
+            position: relative;
+            box-shadow: 0 0 30px rgba(255, 175, 189, 0.4);
+            cursor: pointer;
+            border-radius: 4px;
+            overflow: visible;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-left: calc(min(350px, 90vw) / 2) solid transparent;
+            border-right: calc(min(350px, 90vw) / 2) solid transparent;
+            border-top: 130px solid #fce4ec;
+            z-index: 10;
+            transform-origin: top;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+
+        /* 3. CINTA VHS */
+        .vhs-tape {
+            width: 200px;
+            height: 110px;
+            background: var(--vhs-black);
+            border-radius: 8px;
+            border: 3px solid #333;
+            padding: 10px;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: grab;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            z-index: 150;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            user-select: none;
+        }
+
+        .vhs-tape:active { cursor: grabbing; }
+
+        /* 4. SETUP TELEVISIÓN */
+        .retro-setup {
+            display: none;
+            opacity: 0;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            width: 95%;
+            max-width: 600px;
+            transition: opacity 1s ease;
+        }
+
+        .tv-frame {
+            background: linear-gradient(145deg, var(--wood-light), var(--wood-dark));
+            border-radius: 40px;
+            padding: 20px;
+            border: 10px solid #2d1e16;
+            box-shadow: 0 0 60px rgba(0,0,0,0.9);
+            width: 100%;
             position: relative;
         }
 
-        @media (min-width: 768px) {
-            .power-btn {
-                width: 55px;
-                height: 55px;
-                border-width: 4px;
-                box-shadow: 0 4px 0 #7f1d1d, 0 10px 20px rgba(0,0,0,0.3);
+        .screen-area {
+            background: #050505;
+            aspect-ratio: 4 / 3;
+            border-radius: 30px;
+            border: 15px solid #333;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 100px #000;
+        }
+
+        .crt-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 3px 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .static-effect {
+            position: absolute;
+            inset: 0;
+            background: url('https://media.giphy.com/media/oEI9uWUicGuIfA6S5A/giphy.gif');
+            background-size: cover;
+            opacity: 0;
+            z-index: 4;
+        }
+
+        .tv-on .static-effect { animation: staticPulse 1.5s forwards; }
+        @keyframes staticPulse { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+        .tv-controls {
+            position: absolute;
+            right: -15px; top: 50%;
+            transform: translate(100%, -50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 0 20px 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .tv-controls {
+                position: relative; right: 0; top: 0; transform: none;
+                flex-direction: row; width: 100%; justify-content: center;
+                border-radius: 20px; margin-top: 15px;
             }
         }
 
-        .power-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 0 0 #7f1d1d;
+        .power-btn {
+            width: 50px; height: 50px;
+            background: #7f1d1d;
+            border-radius: 50%;
+            border: 4px solid #450a0a;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 0 #450a0a;
         }
 
         .power-btn.active {
             background: #22c55e;
-            border-color: #166534;
-            box-shadow: 0 0 15px #22c55e;
+            border-color: #064e3b;
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.7);
+            transform: translateY(2px);
         }
 
-        .power-icon {
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .speaker-grill {
-            width: 30px;
-            height: 40px;
-            background-image: radial-gradient(#1a202c 1.5px, transparent 1.5px);
-            background-size: 5px 5px;
-            opacity: 0.5;
-        }
-
-        /* Carta de bienvenida */
-        #welcome-screen {
-            z-index: 100;
-            background: rgba(255, 245, 245, 0.2);
-            backdrop-filter: blur(8px);
-        }
-
-        .floating-card {
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(5px);
+        /* REPRODUCTOR VHS */
+        .vhs-player {
             width: 90%;
-            max-width: 400px;
+            height: 70px;
+            background: #111;
+            border: 4px solid #333;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
 
-        #main-content {
-            display: none;
-            opacity: 0;
-            transition: opacity 2s ease;
-            padding-bottom: 40px;
+        .vhs-slot {
+            width: 80%; height: 12px;
+            background: #000;
+            border: 2px solid #222;
+            transition: 0.3s;
         }
 
-        .instruction-tag {
-            background: #ef4444;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 11px;
-            font-weight: bold;
+        .vhs-slot.highlight {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 25px var(--neon-blue);
+        }
+
+        .led {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            transition: 0.5s;
+        }
+
+        .pixel-heart {
             position: absolute;
-            left: 50%;
-            top: -40px;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            animation: bounceTop 2s infinite;
+            width: 20px; height: 20px;
+            background: #ff4b2b;
+            clip-path: polygon(0 20%, 20% 20%, 20% 0, 40% 0, 40% 20%, 60% 20%, 60% 0, 80% 0, 80% 20%, 100% 20%, 100% 60%, 80% 60%, 80% 80%, 60% 80%, 60% 100%, 40% 100%, 40% 80%, 20% 80%, 20% 60%, 0 60%);
+            z-index: 10;
+            animation: heartFloat 2.5s forwards;
         }
 
-        @media (min-width: 768px) {
-            .instruction-tag {
-                left: auto;
-                right: -95px;
-                top: 50%;
-                transform: translateY(-50%);
-                animation: bounceLeft 2s infinite;
-            }
+        @keyframes heartFloat {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-150px) scale(2.5); opacity: 0; }
         }
 
-        @keyframes bounceTop {
-            0%, 100% { transform: translate(-50%, 0); }
-            50% { transform: translate(-50%, -8px); }
-        }
-
-        @keyframes bounceLeft {
-            0%, 100% { transform: translate(0, -50%); }
-            50% { transform: translate(-8px, -50%); }
+        .pixel-font { font-family: 'VT323', monospace; }
+        
+        #vhs-msg {
+            text-shadow: 0 0 15px var(--neon-blue);
         }
     </style>
 </head>
-<body class="flex items-center justify-center p-4">
+<body>
 
-    <div id="sparkle-bg" class="absolute inset-0 pointer-events-none"></div>
-    <div id="heart-bg" class="absolute inset-0 pointer-events-none"></div>
+    <!-- Fondo Mágico -->
+    <div class="magic-background" id="magic-bg"></div>
 
-    <!-- PANTALLA DE BIENVENIDA -->
-    <div id="welcome-screen" class="fixed inset-0 flex flex-col items-center justify-center text-center p-4">
-        <div class="floating-card p-8 md:p-12 rounded-[2rem] cursor-pointer hover:scale-105 transition-all duration-500 group" onclick="startExperience()">
-            <div class="mb-4 md:mb-6 relative">
-                <div class="text-6xl md:text-8xl transition-transform group-hover:rotate-12">✉️</div>
-                <div class="absolute -top-1 -right-1 bg-red-500 w-5 h-5 rounded-full border-2 border-white animate-pulse"></div>
+    <!-- Paso 1: El Sobre -->
+    <div id="envelope-screen" class="envelope-container">
+        <div id="envelope" class="envelope flex flex-col items-center justify-center" onclick="openEnvelope()">
+            <div class="envelope-flap" id="flap"></div>
+            <div class="z-10 text-center px-6">
+                <span class="pixel-font text-pink-600 text-3xl tracking-widest">PARA TI</span>
+                <p class="mt-2 text-gray-500 text-xs italic">HAZ CLIC PARA ABRIR</p>
+                <div class="mt-4 text-5xl">💌</div>
             </div>
-            <h1 class="dancing text-4xl md:text-6xl text-pink-500 mb-3">Para mi persona favorita</h1>
-            <p class="text-gray-400 font-medium text-sm md:text-lg italic">Toca aquí para ver tu regalo...</p>
+        </div>
+        <p class="text-white/80 mt-10 text-center text-sm px-4 drop-shadow-lg">
+            "He guardado un momento mágico en esta cinta retro..."
+        </p>
+    </div>
+
+    <!-- Paso 2: Cinta VHS -->
+    <div id="vhs-tape" class="vhs-tape">
+        <div class="bg-gray-200 p-2 text-center text-[10px] font-bold text-black border-2 border-gray-400">
+            NUESTRA HISTORIA ❤️<br>
+            <span class="text-[8px] font-normal">REC 01:20:25</span>
+        </div>
+        <div class="flex justify-between items-center px-4">
+            <div class="w-10 h-10 rounded-full border-4 border-gray-800 bg-gray-900"></div>
+            <div class="w-10 h-10 rounded-full border-4 border-gray-800 bg-gray-900"></div>
         </div>
     </div>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <div id="main-content" class="w-full flex flex-col items-center z-10 max-w-4xl mx-auto">
-        <h4 class="dancing text-4xl md:text-7xl text-white mb-8 md:mb-12 text-center drop-shadow-lg px-2">
-     La nostalgia como prueba de amor ❤️
-        </h4>
-        
-        <div class="tv-wrapper">
-            <div id="tv-frame" class="tv-outer-frame">
-                <!-- Pantalla -->
-                <div class="w-full">
-                    <div class="screen-bezel">
-                        <div class="screen-container">
-                            <div class="screen-glass"></div>
-                            <div id="player-wrapper">
-                                <div id="player"></div>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Paso 3: Setup TV -->
+    <div id="retro-setup" class="retro-setup">
+        <div class="tv-frame">
+            <div class="screen-area" id="screen">
+                <div class="crt-overlay"></div>
+                <div class="static-effect"></div>
+                <div id="player-container" class="w-full h-full opacity-0 transition-opacity duration-1000">
+                    <div id="player"></div>
                 </div>
-                
-                <!-- Panel de Control (Abajo en móvil, lateral en Desktop) -->
-                <div class="tv-controls">
-                    <div class="knob hidden md:block"></div>
-                    <div class="speaker-grill hidden md:block"></div>
-                    
-                    <div class="relative flex flex-col items-center gap-1">
-                        <div id="power-button" class="power-btn" onclick="turnOnTV()">
-                            <span class="power-icon">⏻</span>
-                            <div id="power-hint" class="instruction-tag">¡Enciéndeme!</div>
-                        </div>
-                        <span class="text-[8px] md:text-[10px] text-gray-400 font-bold tracking-widest">POWER</span>
-                    </div>
-                    
-                    <div class="knob"></div>
-                    <div class="speaker-grill md:hidden"></div>
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <p class="pixel-font text-cyan-400 text-3xl opacity-0 transition-opacity duration-500" id="vhs-msg">
+                        ¡SISTEMA LISTO!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Controles TV -->
+            <div class="tv-controls">
+                <div class="flex flex-col items-center">
+                    <div id="power-btn" class="power-btn" onclick="togglePower()"></div>
+                    <span class="pixel-font text-white/40 text-[10px] mt-1 uppercase">Power</span>
                 </div>
             </div>
         </div>
 
-        <!-- Dedicatoria -->
-        <div class="mt-8 md:mt-12 text-center w-full max-w-2xl bg-white/15 backdrop-blur-md p-6 md:p-10 rounded-[2.5rem] shadow-2xl border border-white/50">
-            <p class="italic text-pink text-lg md:text-2xl leading-relaxed font-light drop-shadow-md px-2">
-            Ninguna experiencia nueva puede igualar la magia de un vínculo genuino, tus recuerdos siguen iluminando incluso cuando ya no estas presente.
-"
-            </p>
-            <div class="mt-6 md:mt-8">
-                <p class="font-bold text-white text-2xl md:text-4xl dancing">¡Te extraño!</p>
+        <!-- Reproductor -->
+        <div class="vhs-player" id="vhs-player">
+            <div class="vhs-slot" id="vhs-slot"></div>
+            <div class="absolute left-6 flex gap-3">
+                <div class="led bg-red-900" id="led-red"></div>
+                <div class="led bg-green-950" id="led-green"></div>
             </div>
         </div>
+
+        <p class="text-white/60 text-xs italic text-center px-6">
+            Arrastra la cinta al reproductor para comenzar.
+        </p>
     </div>
 
     <script>
-        function initDreamyBackground() {
-            const heartBg = document.getElementById('heart-bg');
-            const sparkleBg = document.getElementById('sparkle-bg');
-            const icons = ['❤️', '✨', '🌸'];
+        let player;
+        let tvOn = false;
+        let tapeInserted = false;
+        const tape = document.getElementById('vhs-tape');
+        const slot = document.getElementById('vhs-slot');
+        const bg = document.getElementById('magic-bg');
 
-            setInterval(() => {
-                const heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDuration = (Math.random() * 3 + 6) + 's';
-                heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
-                heartBg.appendChild(heart);
-                setTimeout(() => heart.remove(), 8000);
-            }, 800);
-
-            for(let i = 0; i < 40; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.className = 'sparkle';
-                sparkle.style.left = Math.random() * 100 + 'vw';
-                sparkle.style.top = Math.random() * 100 + 'vh';
-                const size = Math.random() * 2 + 1;
-                sparkle.style.width = size + 'px';
-                sparkle.style.height = size + 'px';
-                sparkle.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
-                sparkleBg.appendChild(sparkle);
+        // --- 1. FONDO MÁGICO ---
+        function initMagicBackground() {
+            for (let i = 0; i < 70; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.top = `${Math.random() * 100}vh`;
+                star.style.setProperty('--d', `${2 + Math.random() * 4}s`);
+                star.style.setProperty('--op', `${0.3 + Math.random() * 0.7}`);
+                bg.appendChild(star);
+            }
+            const hearts = ['💖', '✨', '❤️', '💕'];
+            for (let i = 0; i < 12; i++) {
+                const h = document.createElement('div');
+                h.className = 'floating-heart';
+                h.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+                h.style.left = `${Math.random() * 100}vw`;
+                h.style.setProperty('--s', `${15 + Math.random() * 20}px`);
+                h.style.setProperty('--d', `${12 + Math.random() * 10}s`);
+                h.style.animationDelay = `${Math.random() * 10}s`;
+                bg.appendChild(h);
             }
         }
 
-        let player;
-        let isPlayerReady = false;
-        let isTVOn = false;
+        // --- 2. APERTURA DEL SOBRE ---
+        function openEnvelope() {
+            document.getElementById('envelope').classList.add('open');
+            setTimeout(() => {
+                document.getElementById('envelope-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('envelope-screen').style.display = 'none';
+                    tape.style.display = 'flex';
+                    document.getElementById('retro-setup').style.display = 'flex';
+                    setTimeout(() => {
+                        document.getElementById('retro-setup').style.opacity = '1';
+                        initDragging();
+                    }, 50);
+                }, 800);
+            }, 1000);
+        }
 
+        // --- 3. DRAG AND DROP VHS ---
+        function initDragging() {
+            let active = false;
+            let currentX, currentY, initialX, initialY;
+            let xOffset = 0, yOffset = 0;
+
+            function dragStart(e) {
+                const pos = e.type === "touchstart" ? e.touches[0] : e;
+                initialX = pos.clientX - xOffset;
+                initialY = pos.clientY - yOffset;
+                if (e.target === tape || tape.contains(e.target)) active = true;
+            }
+
+            function drag(e) {
+                if (active) {
+                    e.preventDefault();
+                    const pos = e.type === "touchmove" ? e.touches[0] : e;
+                    currentX = pos.clientX - initialX;
+                    currentY = pos.clientY - initialY;
+                    xOffset = currentX;
+                    yOffset = currentY;
+                    tape.style.transform = `translate(calc(-50% + ${currentX}px), calc(-50% + ${currentY}px)) scale(0.9)`;
+                    
+                    // Colisión visual con el slot
+                    const sRect = slot.getBoundingClientRect();
+                    const tRect = tape.getBoundingClientRect();
+                    if (tRect.left < sRect.right && tRect.right > sRect.left && 
+                        tRect.top < sRect.bottom && tRect.bottom > sRect.top) {
+                        slot.classList.add('highlight');
+                    } else {
+                        slot.classList.remove('highlight');
+                    }
+                }
+            }
+
+            function dragEnd(e) {
+                active = false;
+                const sRect = slot.getBoundingClientRect();
+                const tRect = tape.getBoundingClientRect();
+                const centerT = { x: tRect.left + tRect.width/2, y: tRect.top + tRect.height/2 };
+
+                if (centerT.x > sRect.left && centerT.x < sRect.right && 
+                    centerT.y > sRect.top && centerT.y < sRect.bottom) {
+                    insertTape();
+                } else {
+                    // Reset position
+                    xOffset = 0; yOffset = 0;
+                    tape.style.transition = "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+                    tape.style.transform = "translate(-50%, -50%)";
+                    setTimeout(() => tape.style.transition = "none", 500);
+                }
+            }
+
+            window.addEventListener("touchstart", dragStart, {passive: false});
+            window.addEventListener("touchend", dragEnd);
+            window.addEventListener("touchmove", drag, {passive: false});
+            window.addEventListener("mousedown", dragStart);
+            window.addEventListener("mouseup", dragEnd);
+            window.addEventListener("mousemove", drag);
+        }
+
+        function insertTape() {
+            if (tapeInserted) return;
+            tapeInserted = true;
+            tape.style.transition = "all 0.6s ease-in";
+            tape.style.transform = "translate(-50%, -10%) scale(0.1)";
+            tape.style.opacity = "0";
+            
+            setTimeout(() => {
+                tape.style.display = "none";
+                document.getElementById('led-red').classList.remove('bg-red-900');
+                document.getElementById('led-red').classList.add('bg-red-500', 'shadow-[0_0_10px_red]');
+                document.getElementById('led-green').classList.remove('bg-green-950');
+                document.getElementById('led-green').classList.add('bg-green-500', 'shadow-[0_0_10px_#22c55e]');
+                
+                showMsg("¡SISTEMA LISTO!");
+                setTimeout(() => {
+                    if (!tvOn) document.getElementById('vhs-msg').style.opacity = "0";
+                }, 2500);
+            }, 600);
+        }
+
+        function showMsg(txt) {
+            const m = document.getElementById('vhs-msg');
+            m.innerText = txt;
+            m.style.opacity = "1";
+        }
+
+        // --- 4. TV POWER & VIDEO ---
+        function togglePower() {
+            if (!tapeInserted) {
+                showMsg("INSERTE CINTA");
+                setTimeout(() => document.getElementById('vhs-msg').style.opacity = "0", 2000);
+                return;
+            }
+            if (tvOn) return;
+            tvOn = true;
+            document.getElementById('power-btn').classList.add('active');
+            document.getElementById('retro-setup').classList.add('tv-on');
+            document.getElementById('vhs-msg').style.opacity = "0";
+            
+            // Corazones pixelados
+            for(let i=0; i<15; i++) {
+                setTimeout(() => {
+                    const h = document.createElement('div');
+                    h.className = 'pixel-heart';
+                    h.style.left = (Math.random() * 70 + 15) + '%';
+                    h.style.bottom = '20%';
+                    document.getElementById('screen').appendChild(h);
+                    setTimeout(() => h.remove(), 2500);
+                }, i * 150);
+            }
+
+            setTimeout(() => {
+                document.getElementById('player-container').style.opacity = "1";
+                if (player) player.playVideo();
+            }, 1600);
+        }
+
+        // YOUTUBE API
         const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        document.head.appendChild(tag);
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
-                height: '100%',
-                width: '100%',
-                videoId: '2BabCBQysrU',
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 1,
-                    'rel': 0,
-                    'modestbranding': 1,
-                    'enablejsapi': 1,
-                    'origin': window.location.origin,
-                    'playsinline': 1 // Vital para móviles
-                },
-                events: {
-                    'onReady': () => { isPlayerReady = true; }
-                }
+                height: '100%', width: '100%', videoId: '2BabCBQysrU', // Video romántico por defecto
+                playerVars: { 'autoplay': 0, 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 },
+                events: { 'onReady': () => console.log("Video cargado") }
             });
         }
 
-        function turnOnTV() {
-            if (isTVOn) return;
-            isTVOn = true;
-            document.getElementById('tv-frame').classList.add('tv-on');
-            document.getElementById('power-button').classList.add('active');
-            document.getElementById('power-hint').style.display = 'none';
-
-            if (isPlayerReady && player) {
-                player.playVideo();
-            }
-        }
-
-        function startExperience() {
-            const welcome = document.getElementById('welcome-screen');
-            const main = document.getElementById('main-content');
-            welcome.style.opacity = '0';
-            welcome.style.pointerEvents = 'none';
-            setTimeout(() => {
-                welcome.style.display = 'none';
-                main.style.display = 'flex';
-                setTimeout(() => main.style.opacity = '1', 100);
-            }, 800);
-        }
-
-        window.onload = initDreamyBackground;
+        window.onload = initMagicBackground;
     </script>
 </body>
 </html>
