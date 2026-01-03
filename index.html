@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -14,11 +14,12 @@
 
         body {
             margin: 0;
-            overflow: hidden;
+            overflow-x: hidden;
             background: var(--dreamy-gradient);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             font-family: 'Quicksand', sans-serif;
+            min-height: 100vh;
         }
 
         @keyframes gradientBG {
@@ -63,42 +64,59 @@
             50% { opacity: 1; transform: scale(1.5); }
         }
 
-        /* TV DE ENSUEÑO - ESTILO PREMIUM */
+        /* TV DE ENSUEÑO - RESPONSIVE */
         .tv-wrapper {
             perspective: 1000px;
-            filter: drop-shadow(0 30px 60px rgba(0,0,0,0.4));
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));
+            width: 100%;
+            max-width: 650px;
         }
 
         .tv-outer-frame {
             background: linear-gradient(145deg, #2d3748, #1a202c);
-            border-radius: 50px;
-            padding: 25px;
-            border: 8px solid #4a5568;
+            border-radius: 30px;
+            padding: 15px;
+            border: 6px solid #4a5568;
             display: flex;
-            gap: 20px;
+            flex-direction: column; /* Mobile first: controles abajo */
+            gap: 15px;
             position: relative;
-            transform: rotateX(5deg);
+            transform: rotateX(2deg);
+        }
+
+        @media (min-width: 768px) {
+            .tv-outer-frame {
+                flex-direction: row; /* Desktop: controles al lado */
+                padding: 25px;
+                border-radius: 50px;
+                border-width: 8px;
+            }
         }
 
         .screen-bezel {
             background: #000;
-            padding: 15px;
-            border-radius: 25px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 20px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
             position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .screen-bezel {
+                padding: 15px;
+                border-radius: 25px;
+            }
         }
 
         .screen-container {
-            background: #000; /* Pantalla apagada inicialmente */
+            background: #000;
             aspect-ratio: 16 / 9;
-            border-radius: 15px;
+            border-radius: 12px;
             overflow: hidden;
             border: 2px solid #2d3748;
-            box-shadow: 0 0 15px rgba(255,255,255,0.05);
             position: relative;
         }
 
-        /* Capa de video oculta hasta encender */
         #player-wrapper {
             opacity: 0;
             transition: opacity 1s ease;
@@ -110,7 +128,6 @@
             opacity: 1;
         }
 
-        /* Efecto de cristal en pantalla */
         .screen-glass {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -119,32 +136,51 @@
             z-index: 10;
         }
 
-        .tv-knobs {
+        .tv-controls {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 20px;
-            padding: 10px;
+            flex-direction: row; /* Mobile: horizontal */
+            justify-content: space-around;
+            align-items: center;
+            padding: 5px 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .tv-controls {
+                flex-direction: column; /* Desktop: vertical */
+                gap: 20px;
+                padding: 10px;
+                background: transparent;
+                width: 80px;
+            }
         }
 
         .knob {
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             background: radial-gradient(circle at 30% 30%, #4a5568, #1a202c);
             border-radius: 50%;
-            border: 3px solid #2d3748;
+            border: 2px solid #2d3748;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
             position: relative;
         }
 
+        @media (min-width: 768px) {
+            .knob {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
         /* BOTÓN DE ENCENDIDO */
         .power-btn {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             background: #ef4444;
             border-radius: 50%;
-            border: 4px solid #991b1b;
-            box-shadow: 0 4px 0 #7f1d1d, 0 10px 20px rgba(0,0,0,0.3);
+            border: 3px solid #991b1b;
+            box-shadow: 0 3px 0 #7f1d1d, 0 5px 10px rgba(0,0,0,0.3);
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -153,9 +189,18 @@
             position: relative;
         }
 
+        @media (min-width: 768px) {
+            .power-btn {
+                width: 55px;
+                height: 55px;
+                border-width: 4px;
+                box-shadow: 0 4px 0 #7f1d1d, 0 10px 20px rgba(0,0,0,0.3);
+            }
+        }
+
         .power-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 #7f1d1d, 0 5px 10px rgba(0,0,0,0.2);
+            transform: translateY(2px);
+            box-shadow: 0 0 0 #7f1d1d;
         }
 
         .power-btn.active {
@@ -166,91 +211,107 @@
 
         .power-icon {
             color: white;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
         }
 
         .speaker-grill {
-            width: 40px;
-            height: 60px;
-            background-image: radial-gradient(#1a202c 2px, transparent 2px);
-            background-size: 6px 6px;
+            width: 30px;
+            height: 40px;
+            background-image: radial-gradient(#1a202c 1.5px, transparent 1.5px);
+            background-size: 5px 5px;
             opacity: 0.5;
         }
 
-        /* Estilo de la carta */
+        /* Carta de bienvenida */
         #welcome-screen {
             z-index: 100;
-            background: rgba(255, 245, 245, 0.4);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 245, 245, 0.2);
+            backdrop-filter: blur(8px);
         }
 
         .floating-card {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             backdrop-filter: blur(5px);
+            width: 90%;
+            max-width: 400px;
         }
 
         #main-content {
             display: none;
             opacity: 0;
             transition: opacity 2s ease;
+            padding-bottom: 40px;
         }
 
-        /* Etiqueta de instrucción */
         .instruction-tag {
             background: #ef4444;
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
             font-weight: bold;
             position: absolute;
-            right: -100px;
-            top: 50%;
-            transform: translateY(-50%);
+            left: 50%;
+            top: -40px;
+            transform: translateX(-50%);
             white-space: nowrap;
-            animation: bounceLeft 2s infinite;
+            animation: bounceTop 2s infinite;
+        }
+
+        @media (min-width: 768px) {
+            .instruction-tag {
+                left: auto;
+                right: -95px;
+                top: 50%;
+                transform: translateY(-50%);
+                animation: bounceLeft 2s infinite;
+            }
+        }
+
+        @keyframes bounceTop {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, -8px); }
         }
 
         @keyframes bounceLeft {
             0%, 100% { transform: translate(0, -50%); }
-            50% { transform: translate(-10px, -50%); }
+            50% { transform: translate(-8px, -50%); }
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen">
+<body class="flex items-center justify-center p-4">
 
     <div id="sparkle-bg" class="absolute inset-0 pointer-events-none"></div>
     <div id="heart-bg" class="absolute inset-0 pointer-events-none"></div>
 
     <!-- PANTALLA DE BIENVENIDA -->
-    <div id="welcome-screen" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
-        <div class="floating-card p-12 rounded-[2rem] cursor-pointer hover:scale-105 transition-all duration-500 group" onclick="startExperience()">
-            <div class="mb-6 relative">
-                <div class="text-8xl transition-transform group-hover:rotate-12">✉️</div>
-                <div class="absolute -top-2 -right-2 bg-red-500 w-6 h-6 rounded-full border-2 border-white animate-pulse"></div>
+    <div id="welcome-screen" class="fixed inset-0 flex flex-col items-center justify-center text-center p-4">
+        <div class="floating-card p-8 md:p-12 rounded-[2rem] cursor-pointer hover:scale-105 transition-all duration-500 group" onclick="startExperience()">
+            <div class="mb-4 md:mb-6 relative">
+                <div class="text-6xl md:text-8xl transition-transform group-hover:rotate-12">✉️</div>
+                <div class="absolute -top-1 -right-1 bg-red-500 w-5 h-5 rounded-full border-2 border-white animate-pulse"></div>
             </div>
-            <h1 class="dancing text-6xl text-pink-500 mb-4">Para mi persona favorita</h1>
-            <p class="text-gray-500 font-medium text-lg">Toca aquí para ver tu regalo...</p>
+            <h1 class="dancing text-4xl md:text-6xl text-pink-500 mb-3">Para mi persona favorita</h1>
+            <p class="text-gray-400 font-medium text-sm md:text-lg italic">Toca aquí para ver tu regalo...</p>
         </div>
     </div>
 
     <!-- CONTENIDO PRINCIPAL -->
-    <div id="main-content" class="w-full max-w-5xl px-4 flex flex-col items-center z-10">
-        <h2 class="dancing text-5xl md:text-7xl text-white mb-12 text-center drop-shadow-lg">
-            Eres mi única excepción ❤️
-        </h2>
+    <div id="main-content" class="w-full flex flex-col items-center z-10 max-w-4xl mx-auto">
+        <h4 class="dancing text-4xl md:text-7xl text-white mb-8 md:mb-12 text-center drop-shadow-lg px-2">
+     La nostalgia como prueba de amor ❤️
+        </h4>
         
-        <div class="tv-wrapper w-full max-w-4xl">
+        <div class="tv-wrapper">
             <div id="tv-frame" class="tv-outer-frame">
                 <!-- Pantalla -->
-                <div class="flex-grow">
+                <div class="w-full">
                     <div class="screen-bezel">
                         <div class="screen-container">
                             <div class="screen-glass"></div>
-                            <!-- Envoltorio para controlar la opacidad del video -->
                             <div id="player-wrapper">
                                 <div id="player"></div>
                             </div>
@@ -258,31 +319,33 @@
                     </div>
                 </div>
                 
-                <!-- Panel de Control -->
-                <div class="tv-knobs hidden md:flex">
-                    <div class="knob"></div>
-                    <div class="knob"></div>
-                    <div class="speaker-grill"></div>
+                <!-- Panel de Control (Abajo en móvil, lateral en Desktop) -->
+                <div class="tv-controls">
+                    <div class="knob hidden md:block"></div>
+                    <div class="speaker-grill hidden md:block"></div>
                     
-                    <!-- BOTÓN DE ENCENDIDO CON INDICADOR -->
-                    <div class="relative mt-auto mb-4 flex flex-col items-center gap-2">
+                    <div class="relative flex flex-col items-center gap-1">
                         <div id="power-button" class="power-btn" onclick="turnOnTV()">
                             <span class="power-icon">⏻</span>
                             <div id="power-hint" class="instruction-tag">¡Enciéndeme!</div>
                         </div>
-                        <span class="text-[10px] text-gray-400 font-bold tracking-widest uppercase">POWER</span>
+                        <span class="text-[8px] md:text-[10px] text-gray-400 font-bold tracking-widest">POWER</span>
                     </div>
+                    
+                    <div class="knob"></div>
+                    <div class="speaker-grill md:hidden"></div>
                 </div>
             </div>
         </div>
 
         <!-- Dedicatoria -->
-        <div class="mt-12 text-center max-w-2xl bg-white/20 backdrop-blur-md p-10 rounded-[3rem] shadow-2xl border border-white/30">
-            <p class="italic text-white text-xl md:text-2xl leading-relaxed font-light drop-shadow-md">
-                "Tal vez es por eso que me gusta esta canción... porque me recuerda que, a pesar de todo, tú eres lo mejor que me ha pasado."
+        <div class="mt-8 md:mt-12 text-center w-full max-w-2xl bg-white/15 backdrop-blur-md p-6 md:p-10 rounded-[2.5rem] shadow-2xl border border-white/20">
+            <p class="italic text-white text-lg md:text-2xl leading-relaxed font-light drop-shadow-md px-2">
+            Ninguna experiencia nueva puede igualar la magia de un vínculo genuino, tus recuerdos siguen iluminando incluso cuando ya no estas presente.
+"
             </p>
-            <div class="mt-8">
-                <p class="font-bold text-white text-3xl dancing">Te amo muchísimo</p>
+            <div class="mt-6 md:mt-8">
+                <p class="font-bold text-white text-2xl md:text-4xl dancing">Te amo muchísimo</p>
             </div>
         </div>
     </div>
@@ -291,25 +354,25 @@
         function initDreamyBackground() {
             const heartBg = document.getElementById('heart-bg');
             const sparkleBg = document.getElementById('sparkle-bg');
-            const icons = ['❤️', '✨', '☁️', '🌸'];
+            const icons = ['❤️', '✨', '🌸'];
 
             setInterval(() => {
                 const heart = document.createElement('div');
                 heart.className = 'heart';
                 heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
                 heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
-                heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                heart.style.animationDuration = (Math.random() * 3 + 6) + 's';
+                heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
                 heartBg.appendChild(heart);
                 setTimeout(() => heart.remove(), 8000);
-            }, 600);
+            }, 800);
 
-            for(let i = 0; i < 50; i++) {
+            for(let i = 0; i < 40; i++) {
                 const sparkle = document.createElement('div');
                 sparkle.className = 'sparkle';
                 sparkle.style.left = Math.random() * 100 + 'vw';
                 sparkle.style.top = Math.random() * 100 + 'vh';
-                const size = Math.random() * 3 + 1;
+                const size = Math.random() * 2 + 1;
                 sparkle.style.width = size + 'px';
                 sparkle.style.height = size + 'px';
                 sparkle.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
@@ -332,12 +395,13 @@
                 width: '100%',
                 videoId: '2BabCBQysrU',
                 playerVars: {
-                    'autoplay': 0, // No autoplay hasta que pulse el botón
+                    'autoplay': 0,
                     'controls': 1,
                     'rel': 0,
                     'modestbranding': 1,
                     'enablejsapi': 1,
-                    'origin': window.location.origin
+                    'origin': window.location.origin,
+                    'playsinline': 1 // Vital para móviles
                 },
                 events: {
                     'onReady': () => { isPlayerReady = true; }
@@ -346,19 +410,12 @@
         }
 
         function turnOnTV() {
-            if (isTVOn) return; // Evitar múltiples clics
-            
+            if (isTVOn) return;
             isTVOn = true;
-            const tvFrame = document.getElementById('tv-frame');
-            const powerBtn = document.getElementById('power-button');
-            const hint = document.getElementById('power-hint');
-            
-            // Efectos visuales de encendido
-            tvFrame.classList.add('tv-on');
-            powerBtn.classList.add('active');
-            hint.style.display = 'none';
+            document.getElementById('tv-frame').classList.add('tv-on');
+            document.getElementById('power-button').classList.add('active');
+            document.getElementById('power-hint').style.display = 'none';
 
-            // Reproducir video
             if (isPlayerReady && player) {
                 player.playVideo();
             }
@@ -367,16 +424,12 @@
         function startExperience() {
             const welcome = document.getElementById('welcome-screen');
             const main = document.getElementById('main-content');
-            
             welcome.style.opacity = '0';
             welcome.style.pointerEvents = 'none';
-            
             setTimeout(() => {
                 welcome.style.display = 'none';
                 main.style.display = 'flex';
-                setTimeout(() => {
-                    main.style.opacity = '1';
-                }, 100);
+                setTimeout(() => main.style.opacity = '1', 100);
             }, 800);
         }
 
