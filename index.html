@@ -128,7 +128,7 @@
             opacity: 0;
             flex-direction: column;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1rem;
             width: 95%;
             max-width: 600px;
             transition: opacity 1s ease;
@@ -171,6 +171,7 @@
             background-size: cover;
             opacity: 0;
             z-index: 4;
+            pointer-events: none;
         }
 
         .tv-on .static-effect { animation: staticPulse 1.5s forwards; }
@@ -178,26 +179,42 @@
 
         .tv-controls {
             position: absolute;
-            right: -15px; top: 50%;
+            right: -10px; top: 50%;
             transform: translate(100%, -50%);
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             background: #1a1a1a;
-            padding: 15px;
-            border-radius: 0 20px 20px 0;
+            padding: 15px 10px;
+            border-radius: 0 15px 15px 0;
+            border: 2px solid #333;
         }
 
         @media (max-width: 768px) {
             .tv-controls {
                 position: relative; right: 0; top: 0; transform: none;
-                flex-direction: row; width: 100%; justify-content: center;
-                border-radius: 20px; margin-top: 15px;
+                flex-direction: row; width: 100%; justify-content: space-around;
+                border-radius: 15px; margin-top: 10px;
             }
         }
 
+        .control-btn {
+            width: 40px; height: 40px;
+            background: #333;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            transition: all 0.2s;
+            border-bottom: 3px solid #000;
+        }
+        .control-btn:active { transform: translateY(2px); border-bottom-width: 1px; }
+
         .power-btn {
-            width: 50px; height: 50px;
+            width: 45px; height: 45px;
             background: #7f1d1d;
             border-radius: 50%;
             border: 4px solid #450a0a;
@@ -209,8 +226,9 @@
         .power-btn.active {
             background: #22c55e;
             border-color: #064e3b;
-            box-shadow: 0 0 25px rgba(34, 197, 94, 0.7);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.6);
             transform: translateY(2px);
+            border-bottom: none;
         }
 
         /* REPRODUCTOR VHS */
@@ -263,6 +281,19 @@
         #vhs-msg {
             text-shadow: 0 0 15px var(--neon-blue);
         }
+
+        /* Botón de inserción fácil para móvil */
+        #easy-insert {
+            display: none;
+            background: rgba(255,255,255,0.1);
+            border: 1px dashed rgba(255,255,255,0.3);
+            border-radius: 10px;
+            padding: 8px 15px;
+            margin-top: 80px;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -286,7 +317,7 @@
     </div>
 
     <!-- Paso 2: Cinta VHS -->
-    <div id="vhs-tape" class="vhs-tape">
+    <div id="vhs-tape" class="vhs-tape" onclick="checkEasyInsert()">
         <div class="bg-gray-200 p-2 text-center text-[10px] font-bold text-black border-2 border-gray-400">
             NUESTRA HISTORIA ❤️<br>
             <span class="text-[8px] font-normal">REC 01:20:25</span>
@@ -302,7 +333,7 @@
         <div class="tv-frame">
             <div class="screen-area" id="screen">
                 <div class="crt-overlay"></div>
-                <div class="static-effect"></div>
+                <div class="static-effect" id="static"></div>
                 <div id="player-container" class="w-full h-full opacity-0 transition-opacity duration-1000">
                     <div id="player"></div>
                 </div>
@@ -315,9 +346,21 @@
 
             <!-- Controles TV -->
             <div class="tv-controls">
-                <div class="flex flex-col items-center">
+                <div class="flex flex-col items-center gap-1">
                     <div id="power-btn" class="power-btn" onclick="togglePower()"></div>
-                    <span class="pixel-font text-white/40 text-[10px] mt-1 uppercase">Power</span>
+                    <span class="pixel-font text-white/40 text-[10px] uppercase">Power</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                    <div class="control-btn" onclick="pauseVideo()">
+                        <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </div>
+                    <span class="pixel-font text-white/40 text-[8px] uppercase">Pause</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                    <div class="control-btn" onclick="stopVideo()">
+                        <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current"><path d="M6 6h12v12H6z"/></svg>
+                    </div>
+                    <span class="pixel-font text-white/40 text-[8px] uppercase">Stop</span>
                 </div>
             </div>
         </div>
@@ -331,8 +374,12 @@
             </div>
         </div>
 
-        <p class="text-white/60 text-xs italic text-center px-6">
-            Arrastra la cinta al reproductor para comenzar.
+        <div id="easy-insert" onclick="insertTape()">
+            <span class="pixel-font text-white text-sm">TOUCH PARA INSERTAR CINTA 📼</span>
+        </div>
+
+        <p id="instruction-text" class="text-white/60 text-xs italic text-center px-6">
+            Arrastra la cinta al reproductor o tócala para insertarla.
         </p>
     </div>
 
@@ -340,9 +387,11 @@
         let player;
         let tvOn = false;
         let tapeInserted = false;
+        let isPaused = false;
         const tape = document.getElementById('vhs-tape');
         const slot = document.getElementById('vhs-slot');
         const bg = document.getElementById('magic-bg');
+        const staticOverlay = document.getElementById('static');
 
         // --- 1. FONDO MÁGICO ---
         function initMagicBackground() {
@@ -380,6 +429,7 @@
                     document.getElementById('envelope-screen').style.display = 'none';
                     tape.style.display = 'flex';
                     document.getElementById('retro-setup').style.display = 'flex';
+                    document.getElementById('easy-insert').style.display = 'block';
                     setTimeout(() => {
                         document.getElementById('retro-setup').style.opacity = '1';
                         initDragging();
@@ -411,7 +461,6 @@
                     yOffset = currentY;
                     tape.style.transform = `translate(calc(-50% + ${currentX}px), calc(-50% + ${currentY}px)) scale(0.9)`;
                     
-                    // Colisión visual con el slot
                     const sRect = slot.getBoundingClientRect();
                     const tRect = tape.getBoundingClientRect();
                     if (tRect.left < sRect.right && tRect.right > sRect.left && 
@@ -424,6 +473,7 @@
             }
 
             function dragEnd(e) {
+                if (!active) return;
                 active = false;
                 const sRect = slot.getBoundingClientRect();
                 const tRect = tape.getBoundingClientRect();
@@ -433,7 +483,6 @@
                     centerT.y > sRect.top && centerT.y < sRect.bottom) {
                     insertTape();
                 } else {
-                    // Reset position
                     xOffset = 0; yOffset = 0;
                     tape.style.transition = "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
                     tape.style.transform = "translate(-50%, -50%)";
@@ -449,13 +498,22 @@
             window.addEventListener("mousemove", drag);
         }
 
+        function checkEasyInsert() {
+            if(!tapeInserted) insertTape();
+        }
+
         function insertTape() {
             if (tapeInserted) return;
             tapeInserted = true;
-            tape.style.transition = "all 0.6s ease-in";
-            tape.style.transform = "translate(-50%, -10%) scale(0.1)";
+            
+            // Animación de inserción automática
+            tape.style.transition = "all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)";
+            tape.style.transform = "translate(-50%, 150%) scale(0.2) rotate(10deg)";
             tape.style.opacity = "0";
             
+            document.getElementById('easy-insert').style.display = "none";
+            document.getElementById('instruction-text').innerText = "Cinta cargada. Enciende la TV.";
+
             setTimeout(() => {
                 tape.style.display = "none";
                 document.getElementById('led-red').classList.remove('bg-red-900');
@@ -467,7 +525,7 @@
                 setTimeout(() => {
                     if (!tvOn) document.getElementById('vhs-msg').style.opacity = "0";
                 }, 2500);
-            }, 600);
+            }, 800);
         }
 
         function showMsg(txt) {
@@ -483,28 +541,71 @@
                 setTimeout(() => document.getElementById('vhs-msg').style.opacity = "0", 2000);
                 return;
             }
-            if (tvOn) return;
-            tvOn = true;
-            document.getElementById('power-btn').classList.add('active');
-            document.getElementById('retro-setup').classList.add('tv-on');
-            document.getElementById('vhs-msg').style.opacity = "0";
             
-            // Corazones pixelados
-            for(let i=0; i<15; i++) {
+            const powerBtn = document.getElementById('power-btn');
+            
+            if (!tvOn) {
+                // ENCENDER
+                tvOn = true;
+                powerBtn.classList.add('active');
+                document.getElementById('retro-setup').classList.add('tv-on');
+                staticOverlay.style.opacity = "1";
+                
+                // Efecto de encendido CRT
                 setTimeout(() => {
-                    const h = document.createElement('div');
-                    h.className = 'pixel-heart';
-                    h.style.left = (Math.random() * 70 + 15) + '%';
-                    h.style.bottom = '20%';
-                    document.getElementById('screen').appendChild(h);
-                    setTimeout(() => h.remove(), 2500);
-                }, i * 150);
-            }
+                    staticOverlay.style.opacity = "0";
+                    document.getElementById('player-container').style.opacity = "1";
+                    if (player && !isPaused) player.playVideo();
+                }, 1000);
 
+                // Corazones pixelados
+                for(let i=0; i<10; i++) {
+                    setTimeout(() => {
+                        const h = document.createElement('div');
+                        h.className = 'pixel-heart';
+                        h.style.left = (Math.random() * 70 + 15) + '%';
+                        h.style.bottom = '20%';
+                        document.getElementById('screen').appendChild(h);
+                        setTimeout(() => h.remove(), 2500);
+                    }, i * 200);
+                }
+            } else {
+                // APAGAR
+                tvOn = false;
+                powerBtn.classList.remove('active');
+                document.getElementById('retro-setup').classList.remove('tv-on');
+                document.getElementById('player-container').style.opacity = "0";
+                staticOverlay.style.opacity = "0";
+                if (player) player.pauseVideo();
+            }
+        }
+
+        function pauseVideo() {
+            if (!tvOn || !player) return;
+            if (!isPaused) {
+                player.pauseVideo();
+                showMsg("PAUSE");
+                isPaused = true;
+            } else {
+                player.playVideo();
+                document.getElementById('vhs-msg').style.opacity = "0";
+                isPaused = false;
+            }
+        }
+
+        function stopVideo() {
+            if (!tapeInserted || !player) return;
+            player.stopVideo();
+            isPaused = false;
+            
+            // Apagar TV si está encendida
+            if(tvOn) togglePower();
+            
+            // Efecto de expulsión
+            showMsg("EXPULSANDO...");
             setTimeout(() => {
-                document.getElementById('player-container').style.opacity = "1";
-                if (player) player.playVideo();
-            }, 1600);
+                location.reload(); // Reinicia la experiencia para volver a empezar
+            }, 1500);
         }
 
         // YOUTUBE API
@@ -514,9 +615,9 @@
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
-                height: '100%', width: '100%', videoId: '2BabCBQysrU', // Video romántico por defecto
-                playerVars: { 'autoplay': 0, 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 },
-                events: { 'onReady': () => console.log("Video cargado") }
+                height: '100%', width: '100%', videoId: '2BabCBQysrU',
+                playerVars: { 'autoplay': 0, 'controls': 0, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 },
+                events: { 'onReady': () => console.log("Video listo") }
             });
         }
 
